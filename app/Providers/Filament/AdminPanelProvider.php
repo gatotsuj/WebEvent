@@ -28,10 +28,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration()
+            ->emailVerification()
+            ->passwordReset()
             ->brandName('Booking Event Ticket')
             ->brandLogo(asset('images/ticket.png'))
             ->brandLogoHeight('2rem')
             ->favicon(asset('images/ticket.png'))
+            ->authGuard('web')
+            ->authPasswordBroker('users')
             ->navigationGroups([
                 'Event Management',
                 'Customer Management',
