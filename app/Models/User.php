@@ -25,6 +25,7 @@ class User extends Authenticatable
         'role',
         'is_admin',
         'email_verified_at',
+        'last_login_at',
     ];
 
     /**
@@ -48,26 +49,43 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 
     public function canAccessPanel(Panel $panel)
     {
-        return $this->is_admin === true && $this->hasVerifiedEmail();
+        return $this->hasAnyRole(['admin', 'product_manager', 'sales_staff'])
+                && $this->hasVerifiedEmail();
     }
 
     public function isAdmin()
     {
-        return $this->is_admin === true;
+        return $this->hasRole('admin');
     }
 
     public function isSuperAdmin()
     {
-        return $this->role === 'super_admin';
+        return $this->hasRole('admin') && $this->is_admin === true;
     }
 
-    public function hasRole(string $role)
+    public function canManageProducts()
     {
-        return $this->role === $role;
+        return $this->hasAnyRole(['admin', 'product_manager']);
+    }
+
+    public function canManageOrders()
+    {
+        return $this->hasAnyRole(['admin', 'sales_staff']);
+    }
+
+    public function canViewReports()
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function canManageUsers()
+    {
+        return $this->hasRole('admin');
     }
 }
