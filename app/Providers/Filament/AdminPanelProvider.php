@@ -32,6 +32,13 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('images/ticket.png'))
             ->brandLogoHeight('2rem')
             ->favicon(asset('images/ticket.png'))
+            ->navigationGroups([
+                'Event Management',
+                'Customer Management',
+                'Order Management',
+                'Reports',
+                'Settings',
+            ])
             ->colors([
                 'primary' => Color::Blue,
                 'gray' => Color::Slate,
