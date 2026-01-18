@@ -24,7 +24,28 @@ class CategoryResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = 'Event Manajemen';
 
     protected static ?string $navigationLabel = 'Kategori';
+
     protected static ?int $navigationSort = 1;
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_categories');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_categories');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('edit_categories');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('delete_categories');
+    }
 
     public static function form(Schema $schema): Schema
     {

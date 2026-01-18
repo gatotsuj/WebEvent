@@ -53,12 +53,12 @@ class CategoriesTable
                     ->native(false),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()->visible(fn () => auth()->user()->can('edit_categories')),
+                DeleteAction::make()->visible(fn () => auth()->user()->can('delete_categories')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()->visible(fn () => auth()->user()->can('delete_categories')),
                 ]),
             ]);
     }

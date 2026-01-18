@@ -29,12 +29,14 @@ class UsersTable
                     ->searchable()
                     ->copyable(),
 
-                TextColumn::make('role')
+                TextColumn::make('roles.name')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'super_admin' => 'danger',
-                        'admin' => 'warning',
-                        'user' => 'primary',
+                        'admin' => 'danger',
+                        'product_manager' => 'warning',
+                        'sales_staff' => 'info',
+                        'customer' => 'primary',
+                        default => 'gray',
                     }),
 
                 IconColumn::make('is_admin')
@@ -58,15 +60,12 @@ class UsersTable
             ])
             ->filters([
                 //
-                SelectFilter::make('role')
-                    ->options([
-                        'user' => 'User',
-                        'admin' => 'Admin',
-                        'super_admin' => 'Super Admin',
-                    ]),
+                SelectFilter::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple(),
 
                 TernaryFilter::make('is_admin')
-                    ->label('Admin Access'),
+                    ->label('Super Admin Access'),
 
                 TernaryFilter::make('email_verified_at')
                     ->label('Email Verified')

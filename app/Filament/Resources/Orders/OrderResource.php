@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class OrderResource extends Resource
@@ -26,6 +27,42 @@ class OrderResource extends Resource
     protected static ?string $navigationLabel = 'Order';
 
     protected static ?int $navigationSort = 4;
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_orders');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_orders');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('edit_orders');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('delete_orders');
+    }
+
+    // Apply scoping based on user role
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        // Sales staff can only see orders they created or need to handle
+        if ($user->hasRole('sales_staff') && ! $user->hasRole('admin')) {
+            // Add additional filtering if needed
+            // $query->where('created_by', $user->id);
+        }
+
+        return $query;
+    }
 
     public static function form(Schema $schema): Schema
     {

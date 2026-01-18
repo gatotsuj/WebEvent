@@ -9,11 +9,11 @@ use App\Filament\Resources\Products\Schemas\ProductForm;
 use App\Filament\Resources\Products\Tables\ProductsTable;
 use App\Models\Product;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ProductResource extends Resource
 {
@@ -24,7 +24,28 @@ class ProductResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = 'Event Manajemen';
 
     protected static ?string $navigationLabel = 'Events';
+
     protected static ?int $navigationSort = 2;
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_products');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_products');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('edit_products');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('delete_products');
+    }
 
     public static function form(Schema $schema): Schema
     {

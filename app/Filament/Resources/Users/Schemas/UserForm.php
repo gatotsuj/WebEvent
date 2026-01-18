@@ -3,12 +3,13 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use App\Models\User;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Spatie\Permission\Contracts\Permission;
+use Spatie\Permission\Contracts\Role;
 
 class UserForm
 {
@@ -37,24 +38,26 @@ class UserForm
                     ])
                     ->columns(2),
 
-                Section::make('Permissions')
+                Section::make('Roles & Permissions')
                     ->schema([
-                        Select::make('role')
-                            ->options([
-                                'user' => 'User',
-                                'admin' => 'Admin',
-                                'super_admin' => 'Super Admin',
-                            ])
-                            ->default('user')
-                            ->required(),
+                        Select::make('roles')
+                            ->multiple()
+                            ->relationship('roles', 'name')
+                            ->options(Role::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload(),
+
+                        Select::make('permissions')
+                            ->multiple()
+                            ->relationship('permissions', 'name')
+                            ->options(Permission::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Direct permissions (in addition to role permissions)'),
 
                         Toggle::make('is_admin')
-                            ->label('Admin Access')
+                            ->label('Super Admin Access')
                             ->default(false),
-
-                        DateTimePicker::make('email_verified_at')
-                            ->label('Email Verified At')
-                            ->native(false),
                     ])
                     ->columns(2),
             ]);
